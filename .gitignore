@@ -1,0 +1,5 @@
+echo "target/
+*.class
+*.jar
+.env
+application-local.properties" > .gitignore
