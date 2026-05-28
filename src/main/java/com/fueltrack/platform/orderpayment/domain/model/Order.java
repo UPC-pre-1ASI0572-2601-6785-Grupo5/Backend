@@ -1,0 +1,49 @@
+package com.fueltrack.platform.orderpayment.domain.model;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.time.OffsetDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+/**
+ * Order aggregate root for the OrderPayment bounded context.
+ */
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "orders")
+public class Order {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private Long clientId;
+
+    @Column(nullable = false, length = 100)
+    private String fuelType;
+
+    @Column(nullable = false)
+    private Double quantityLiters;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private OrderStatus status;
+
+    @Column(nullable = false)
+    private OffsetDateTime createdAt;
+}
