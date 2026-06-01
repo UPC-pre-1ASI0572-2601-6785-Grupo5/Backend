@@ -31,14 +31,14 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long clientId;
-
     @Column(nullable = false, length = 100)
     private String fuelType;
 
     @Column(nullable = false)
-    private Double quantityLiters;
+    private Double gallons;
+
+    @Column(nullable = false, length = 255)
+    private String documentRef;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)

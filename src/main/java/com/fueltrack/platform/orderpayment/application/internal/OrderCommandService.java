@@ -48,10 +48,10 @@ public class OrderCommandService {
     @Transactional
     public OrderResponse createOrder(CreateOrderRequest request) {
         Order order = Order.builder()
-                .clientId(request.clientId())
                 .fuelType(request.fuelType())
-                .quantityLiters(request.quantityLiters())
-                .status(OrderStatus.PENDING)
+                .gallons(request.gallons())
+                .documentRef(request.documentRef())
+                .status(OrderStatus.PENDING_APPROVAL)
                 .createdAt(OffsetDateTime.now())
                 .build();
 
@@ -82,19 +82,19 @@ public class OrderCommandService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
 
-        BigDecimal amount = BigDecimal.valueOf(order.getQuantityLiters()).multiply(BigDecimal.valueOf(1.00d));
+        BigDecimal amount = BigDecimal.valueOf(order.getGallons()).multiply(BigDecimal.valueOf(1.00d));
         boolean validated = paymentGatewayClient.validatePayment(order.getId(), amount);
         if (!validated) {
             throw new IllegalArgumentException("Payment validation failed");
         }
 
-        order.setStatus(OrderStatus.VALIDATED);
+        order.setStatus(OrderStatus.APPROVED);
         orderRepository.save(order);
 
         Payment payment = Payment.builder()
                 .order(order)
                 .amount(amount)
-                .paymentStatus("VALIDATED")
+            .paymentStatus("APPROVED")
                 .createdAt(OffsetDateTime.now())
                 .build();
         paymentRepository.save(payment);
@@ -105,9 +105,9 @@ public class OrderCommandService {
     private OrderResponse toResponse(Order order) {
         return new OrderResponse(
                 order.getId(),
-                order.getClientId(),
                 order.getFuelType(),
-                order.getQuantityLiters(),
+                order.getGallons(),
+                order.getDocumentRef(),
                 order.getStatus(),
                 order.getCreatedAt());
     }

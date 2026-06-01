@@ -7,12 +7,12 @@ import jakarta.validation.constraints.Positive;
 /**
  * Request payload for creating a fuel order.
  *
- * @param clientId the client identifier
  * @param fuelType the fuel type
- * @param quantityLiters the requested quantity in liters
+ * @param gallons the requested quantity in gallons
+ * @param documentRef the reference document identifier
  */
 public record CreateOrderRequest(
-        @NotNull Long clientId,
         @NotBlank String fuelType,
-        @NotNull @Positive Double quantityLiters) {
+        @NotNull @Positive Double gallons,
+        @NotBlank String documentRef) {
 }

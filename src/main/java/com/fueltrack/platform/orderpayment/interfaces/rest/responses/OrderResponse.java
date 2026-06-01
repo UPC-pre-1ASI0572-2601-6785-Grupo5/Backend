@@ -7,17 +7,17 @@ import java.time.OffsetDateTime;
  * Response payload for order views.
  *
  * @param id the order identifier
- * @param clientId the client identifier
  * @param fuelType the fuel type
- * @param quantityLiters the requested quantity
+ * @param gallons the requested quantity in gallons
+ * @param documentRef the reference document identifier
  * @param status the current order status
  * @param createdAt the creation timestamp
  */
 public record OrderResponse(
         Long id,
-        Long clientId,
         String fuelType,
-        Double quantityLiters,
+        Double gallons,
+        String documentRef,
         OrderStatus status,
         OffsetDateTime createdAt) {
 }
