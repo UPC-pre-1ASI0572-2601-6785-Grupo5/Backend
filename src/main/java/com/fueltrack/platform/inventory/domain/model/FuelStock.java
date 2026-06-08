@@ -1,9 +1,7 @@
-package com.fueltrack.platform.orderpayment.domain.model;
+package com.fueltrack.platform.inventory.domain.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,7 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Order aggregate root for the OrderPayment bounded context.
+ * Fuel stock aggregate root for the Inventory bounded context.
  */
 @Getter
 @Setter
@@ -24,32 +22,22 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "orders")
-public class Order {
+@Table(name = "fuel_stocks")
+public class FuelStock {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, unique = true, length = 100)
     private String fuelType;
 
     @Column(nullable = false)
-    private Double gallons;
-
-    @Column(nullable = false, length = 255)
-    private String documentRef;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
-    private OrderStatus status;
+    private Double currentGallons;
 
     @Column(nullable = false)
-    private OffsetDateTime createdAt;
+    private Double maxCapacityGallons;
 
-    @Column
-    private Long requesterId;
-
-    @Column(length = 50)
-    private String truckId;
+    @Column(nullable = false)
+    private OffsetDateTime updatedAt;
 }
