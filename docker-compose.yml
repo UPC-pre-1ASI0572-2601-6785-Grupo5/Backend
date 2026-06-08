@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: fueltrack-db
+    environment:
+      POSTGRES_DB: fueltrack
+      POSTGRES_USER: fueltrack
+      POSTGRES_PASSWORD: fueltrack
+    ports:
+      - "5432:5432"
+    volumes:
+      - fueltrack_data:/var/lib/postgresql/data
+
+volumes:
+  fueltrack_data:
