@@ -7,5 +7,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Spring Data JPA repository for vehicles.
  */
 public interface JpaVehicleRepository extends JpaRepository<Vehicle, Long> {
-    boolean existsByPlate(String plate);
 }
