@@ -8,14 +8,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * Global CORS configuration for the Vue frontend.
+ * Global CORS configuration.
+ *
+ * <p>Provides a {@link CorsConfigurationSource} bean that Spring Security's
+ * {@code .cors(Customizer.withDefaults())} picks up automatically.  We intentionally
+ * do <strong>not</strong> implement {@code WebMvcConfigurer} to avoid dual CORS
+ * processing that can cause preflight requests to be rejected.</p>
  */
 @Configuration
-public class WebCorsConfig implements WebMvcConfigurer {
+public class WebCorsConfig {
 
     private final List<String> allowedOrigins;
 
@@ -41,17 +44,8 @@ public class WebCorsConfig implements WebMvcConfigurer {
         config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api/**", config);
+        // Apply to ALL paths so that Swagger, actuator, etc. also get CORS headers.
+        source.registerCorsConfiguration("/**", config);
         return source;
-    }
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")
-                .allowedOrigins(allowedOrigins.toArray(String[]::new))
-                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true)
-                .maxAge(3600);
     }
 }
