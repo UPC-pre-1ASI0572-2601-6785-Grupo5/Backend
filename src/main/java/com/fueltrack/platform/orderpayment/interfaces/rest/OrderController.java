@@ -68,6 +68,12 @@ public class OrderController {
         return orderCommandService.approveOrder(id);
     }
 
+    @Operation(summary = "Update gallons of an order (Admin/Manual fix)")
+    @PatchMapping("/{id}/gallons")
+    public OrderResponse updateGallons(@PathVariable Long id, @RequestBody Double newGallons) {
+        return orderCommandService.updateGallons(id, newGallons);
+    }
+
     @Operation(summary = "Dispatch an order with an assigned truck (PROVIDER only)")
     @PatchMapping("/{id}/dispatch")
     public OrderResponse dispatchOrder(@PathVariable Long id,

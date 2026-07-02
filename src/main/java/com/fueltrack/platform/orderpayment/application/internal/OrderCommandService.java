@@ -75,6 +75,14 @@ public class OrderCommandService {
     }
 
     @Transactional
+    public OrderResponse updateGallons(Long id, Double newGallons) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+        order.setGallons(newGallons);
+        return toResponse(orderRepository.save(order));
+    }
+
+    @Transactional
     public OrderResponse dispatchOrder(Long id, String truckId) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
