@@ -50,8 +50,20 @@ public class InventoryCommandService {
     }
 
     private FuelStock findStock(String fuelType) {
-        return fuelStockRepository.findByFuelType(fuelType)
-                .orElseThrow(() -> new IllegalArgumentException("Fuel type not found: " + fuelType));
+        String searchType = fuelType;
+        if (fuelType != null) {
+            String lower = fuelType.toLowerCase();
+            if (lower.contains("diesel") || lower.contains("diésel")) {
+                searchType = "Diesel B5 S-50";
+            } else if (lower.contains("95")) {
+                searchType = "Gasohol 95 Plus";
+            } else if (lower.contains("98") || lower.contains("premium")) {
+                searchType = "Gasohol 98";
+            }
+        }
+        String finalSearchType = searchType;
+        return fuelStockRepository.findByFuelType(searchType)
+                .orElseThrow(() -> new IllegalArgumentException("Fuel type not found: " + finalSearchType));
     }
 
     private StockResponse toResponse(FuelStock stock) {
