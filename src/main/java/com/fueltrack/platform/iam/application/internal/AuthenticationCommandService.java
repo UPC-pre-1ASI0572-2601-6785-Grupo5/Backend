@@ -92,7 +92,7 @@ public class AuthenticationCommandService {
                 user.getTaxId(),
                 user.getPhone(),
                 user.getAddress(),
-                user.isMfaEnabled(),
+                Boolean.TRUE.equals(user.getMfaEnabled()),
                 user.getSubscriptionPlan());
     }
 }

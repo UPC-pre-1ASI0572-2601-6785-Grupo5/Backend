@@ -55,9 +55,9 @@ public class User {
     @Column(length = 255)
     private String address;
 
-    @Column(nullable = false)
+    @Column(name = "mfa_enabled")
     @Builder.Default
-    private boolean mfaEnabled = false;
+    private Boolean mfaEnabled = false;
 
     @Column(length = 50)
     @Builder.Default
