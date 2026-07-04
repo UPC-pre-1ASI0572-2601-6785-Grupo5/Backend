@@ -5,6 +5,7 @@ import com.fueltrack.platform.iam.interfaces.rest.requests.ChangePasswordRequest
 import com.fueltrack.platform.iam.interfaces.rest.requests.ToggleMfaRequest;
 import com.fueltrack.platform.iam.interfaces.rest.requests.UpdateProfileRequest;
 import com.fueltrack.platform.iam.interfaces.rest.responses.AuthResponse;
+import com.fueltrack.platform.iam.infrastructure.security.JwtService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserManagementService userManagementService;
+    private final JwtService jwtService;
 
-    public UserController(UserManagementService userManagementService) {
+    public UserController(UserManagementService userManagementService, JwtService jwtService) {
         this.userManagementService = userManagementService;
+        this.jwtService = jwtService;
     }
 
     @GetMapping("/{id}")
@@ -30,7 +33,7 @@ public class UserController {
             @PathVariable Long id,
             @RequestBody UpdateProfileRequest request) {
         return userManagementService.updateProfile(id, request)
-                .map(user -> ResponseEntity.ok(userManagementService.toAuthResponse(user)))
+                .map(user -> ResponseEntity.ok(userManagementService.toAuthResponseWithToken(user, jwtService.generateToken(user.getEmail()))))
                 .orElse(ResponseEntity.notFound().build());
     }
 

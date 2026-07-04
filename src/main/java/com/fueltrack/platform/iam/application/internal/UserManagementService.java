@@ -6,6 +6,7 @@ import com.fueltrack.platform.iam.interfaces.rest.requests.ChangePasswordRequest
 import com.fueltrack.platform.iam.interfaces.rest.requests.ToggleMfaRequest;
 import com.fueltrack.platform.iam.interfaces.rest.requests.UpdateProfileRequest;
 import com.fueltrack.platform.iam.interfaces.rest.responses.AuthResponse;
+import com.fueltrack.platform.iam.infrastructure.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +17,12 @@ public class UserManagementService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public UserManagementService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserManagementService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     public Optional<User> getUserById(Long id) {
@@ -61,10 +64,13 @@ public class UserManagementService {
     }
 
     public AuthResponse toAuthResponse(User user) {
-        // Return without JWT token when just fetching profile
+        return toAuthResponseWithToken(user, null);
+    }
+
+    public AuthResponse toAuthResponseWithToken(User user, String token) {
         return new AuthResponse(
-                null,
-                null,
+                token,
+                token != null ? "Bearer" : null,
                 user.getId(),
                 user.getEmail(),
                 user.getFullName(),
