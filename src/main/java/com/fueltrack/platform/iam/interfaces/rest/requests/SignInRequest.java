@@ -10,6 +10,6 @@ import jakarta.validation.constraints.NotBlank;
  * @param password the user's raw password
  */
 public record SignInRequest(
-        @Email @NotBlank String email,
+        @NotBlank String email,
         @NotBlank String password) {
 }
