@@ -16,4 +16,8 @@ public interface OrderRepository {
     List<Order> findAll();
 
     List<Order> findByRequesterId(Long requesterId);
+
+    boolean existsById(Long id);
+
+    void deleteById(Long id);
 }

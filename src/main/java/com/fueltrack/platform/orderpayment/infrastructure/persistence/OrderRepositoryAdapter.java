@@ -37,4 +37,14 @@ public class OrderRepositoryAdapter implements OrderRepository {
     public List<Order> findByRequesterId(Long requesterId) {
         return jpaOrderRepository.findByRequesterIdOrderByCreatedAtDesc(requesterId);
     }
+
+    @Override
+    public boolean existsById(Long id) {
+        return jpaOrderRepository.existsById(id);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        jpaOrderRepository.deleteById(id);
+    }
 }
