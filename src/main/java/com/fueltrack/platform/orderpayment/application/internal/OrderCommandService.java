@@ -132,4 +132,12 @@ public class OrderCommandService {
                 order.getRequesterId(),
                 order.getTruckId());
     }
+
+    @Transactional
+    public void deleteOrder(Long id) {
+        if (!orderRepository.existsById(id)) {
+            throw new IllegalArgumentException("Order not found");
+        }
+        orderRepository.deleteById(id);
+    }
 }
