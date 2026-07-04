@@ -3,7 +3,7 @@ package com.fueltrack.platform.iam.interfaces.rest;
 import com.fueltrack.platform.iam.domain.model.User;
 import com.fueltrack.platform.iam.domain.services.UserRepository;
 import com.fueltrack.platform.orderpayment.infrastructure.persistence.JpaOrderRepository;
-import com.fueltrack.platform.orderpayment.domain.services.PaymentRepository;
+import com.fueltrack.platform.orderpayment.infrastructure.persistence.JpaPaymentRepository;
 import com.fueltrack.platform.inventory.domain.services.SiteRepository;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,10 +17,10 @@ public class DevController {
 
     private final UserRepository userRepository;
     private final JpaOrderRepository orderRepository;
-    private final PaymentRepository paymentRepository;
+    private final JpaPaymentRepository paymentRepository;
     private final SiteRepository siteRepository;
 
-    public DevController(UserRepository userRepository, JpaOrderRepository orderRepository, PaymentRepository paymentRepository, SiteRepository siteRepository) {
+    public DevController(UserRepository userRepository, JpaOrderRepository orderRepository, JpaPaymentRepository paymentRepository, SiteRepository siteRepository) {
         this.userRepository = userRepository;
         this.orderRepository = orderRepository;
         this.paymentRepository = paymentRepository;
