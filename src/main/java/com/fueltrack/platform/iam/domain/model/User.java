@@ -42,4 +42,24 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)
     private UserRole role;
+
+    @Column(length = 255)
+    private String companyName;
+
+    @Column(length = 50)
+    private String taxId;
+
+    @Column(length = 50)
+    private String phone;
+
+    @Column(length = 255)
+    private String address;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean mfaEnabled = false;
+
+    @Column(length = 50)
+    @Builder.Default
+    private String subscriptionPlan = "Starter";
 }

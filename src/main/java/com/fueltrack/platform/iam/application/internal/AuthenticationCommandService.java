@@ -87,6 +87,12 @@ public class AuthenticationCommandService {
                 user.getId(),
                 user.getEmail(),
                 user.getFullName(),
-                user.getRole());
+                user.getRole(),
+                user.getCompanyName(),
+                user.getTaxId(),
+                user.getPhone(),
+                user.getAddress(),
+                user.isMfaEnabled(),
+                user.getSubscriptionPlan());
     }
 }

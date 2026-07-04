@@ -18,5 +18,11 @@ public record AuthResponse(
         Long id,
         String email,
         String name,
-        UserRole role) {
+        UserRole role,
+        String companyName,
+        String taxId,
+        String phone,
+        String address,
+        boolean mfaEnabled,
+        String subscriptionPlan) {
 }
