@@ -13,6 +13,7 @@ import jakarta.validation.constraints.Positive;
  */
 public record CreateOrderRequest(
         @NotBlank String fuelType,
+        String name,
         @NotNull @Positive Double gallons,
         @NotBlank String documentRef) {
 }

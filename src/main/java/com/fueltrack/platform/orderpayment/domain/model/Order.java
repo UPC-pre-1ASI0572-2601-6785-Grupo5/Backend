@@ -34,6 +34,9 @@ public class Order {
     @Column(nullable = false, length = 100)
     private String fuelType;
 
+    @Column(length = 255)
+    private String name;
+
     @Column(nullable = false)
     private Double gallons;
 

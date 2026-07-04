@@ -41,6 +41,7 @@ public class OrderCommandService {
     public OrderResponse createOrder(CreateOrderRequest request, Long requesterId) {
         Order order = Order.builder()
                 .fuelType(request.fuelType())
+                .name(request.name())
                 .gallons(request.gallons())
                 .documentRef(request.documentRef())
                 .status(OrderStatus.PENDING_APPROVAL)
@@ -125,6 +126,7 @@ public class OrderCommandService {
         return new OrderResponse(
                 order.getId(),
                 order.getFuelType(),
+                order.getName(),
                 order.getGallons(),
                 order.getDocumentRef(),
                 order.getStatus(),

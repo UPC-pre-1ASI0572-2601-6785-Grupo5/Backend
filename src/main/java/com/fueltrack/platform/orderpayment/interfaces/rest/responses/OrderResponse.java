@@ -9,6 +9,7 @@ import java.time.OffsetDateTime;
 public record OrderResponse(
         Long id,
         String fuelType,
+        String name,
         Double gallons,
         String documentRef,
         OrderStatus status,
