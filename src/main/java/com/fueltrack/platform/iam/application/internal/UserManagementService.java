@@ -27,13 +27,20 @@ public class UserManagementService {
     }
 
     public Optional<User> updateProfile(Long id, UpdateProfileRequest request) {
-        return userRepository.findById(id).map(user -> {
-            if (request.companyName() != null) user.setCompanyName(request.companyName());
-            if (request.taxId() != null) user.setTaxId(request.taxId());
-            if (request.phone() != null) user.setPhone(request.phone());
-            if (request.address() != null) user.setAddress(request.address());
-            return userRepository.save(user);
-        });
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        if (request.fullName() != null && !request.fullName().isBlank()) {
+            user.setFullName(request.fullName());
+        }
+        if (request.email() != null && !request.email().isBlank()) {
+            user.setEmail(request.email());
+        }
+        if (request.companyName() != null) user.setCompanyName(request.companyName());
+        if (request.taxId() != null) user.setTaxId(request.taxId());
+        if (request.phone() != null) user.setPhone(request.phone());
+        if (request.address() != null) user.setAddress(request.address());
+        return Optional.of(userRepository.save(user));
     }
 
     public Optional<User> changePassword(Long id, ChangePasswordRequest request) {
