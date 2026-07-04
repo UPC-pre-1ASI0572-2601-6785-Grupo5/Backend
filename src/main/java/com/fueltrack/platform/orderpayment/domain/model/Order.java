@@ -55,4 +55,12 @@ public class Order {
 
     @Column(length = 50)
     private String truckId;
+
+    public String getTruckId() {
+        return truckId;
+    }
+
+    public void setTruckId(String truckId) {
+        this.truckId = truckId;
+    }
 }
