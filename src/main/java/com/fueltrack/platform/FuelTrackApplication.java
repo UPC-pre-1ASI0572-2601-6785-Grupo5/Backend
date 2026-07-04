@@ -26,26 +26,8 @@ public class FuelTrackApplication {
     }
 
     @Bean
-    public CommandLineRunner initData(
-            UserRepository userRepository, 
-            PasswordEncoder passwordEncoder,
-            com.fueltrack.platform.orderpayment.infrastructure.persistence.JpaOrderRepository orderRepository,
-            com.fueltrack.platform.orderpayment.infrastructure.persistence.JpaPaymentRepository paymentRepository,
-            com.fueltrack.platform.inventory.domain.services.SiteRepository siteRepository
-    ) {
+    public CommandLineRunner initData(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
-            System.out.println("--- WIPING DB ---");
-            paymentRepository.deleteAll();
-            orderRepository.deleteAll();
-            siteRepository.deleteAll();
-            
-            java.util.List<User> users = userRepository.findAll();
-            for (User u : users) {
-                if (!u.getEmail().equals("123") && !u.getEmail().equals("321")) {
-                    userRepository.delete(u);
-                }
-            }
-
             if (userRepository.findByEmail("123").isEmpty()) {
                 User user1 = new User();
                 user1.setEmail("123");
