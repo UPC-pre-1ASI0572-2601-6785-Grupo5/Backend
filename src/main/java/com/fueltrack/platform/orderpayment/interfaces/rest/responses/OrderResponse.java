@@ -17,5 +17,7 @@ public record OrderResponse(
         Long requesterId,
         String truckId,
         Integer etaMinutes,
-        OffsetDateTime dispatchedAt) {
+        OffsetDateTime dispatchedAt,
+        OffsetDateTime completedAt,
+        String securityHash) {
 }

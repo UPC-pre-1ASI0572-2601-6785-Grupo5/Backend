@@ -44,6 +44,7 @@ public class UserManagementService {
         if (request.phone() != null) user.setPhone(request.phone());
         if (request.address() != null) user.setAddress(request.address());
         if (request.subscriptionPlan() != null) user.setSubscriptionPlan(request.subscriptionPlan());
+        if (request.profilePicture() != null) user.setProfilePicture(request.profilePicture());
         return Optional.of(userRepository.save(user));
     }
 
@@ -81,6 +82,7 @@ public class UserManagementService {
                 user.getPhone(),
                 user.getAddress(),
                 Boolean.TRUE.equals(user.getMfaEnabled()),
-                user.getSubscriptionPlan());
+                user.getSubscriptionPlan(),
+                user.getProfilePicture());
     }
 }

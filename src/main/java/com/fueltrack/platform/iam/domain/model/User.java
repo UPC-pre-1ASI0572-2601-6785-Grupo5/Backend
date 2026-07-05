@@ -62,4 +62,7 @@ public class User {
     @Column(length = 50)
     @Builder.Default
     private String subscriptionPlan = "Starter";
+
+    @Column(columnDefinition = "TEXT")
+    private String profilePicture;
 }

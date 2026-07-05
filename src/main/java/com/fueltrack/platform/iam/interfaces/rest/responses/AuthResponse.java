@@ -24,5 +24,6 @@ public record AuthResponse(
         String phone,
         String address,
         boolean mfaEnabled,
-        String subscriptionPlan) {
+        String subscriptionPlan,
+        String profilePicture) {
 }

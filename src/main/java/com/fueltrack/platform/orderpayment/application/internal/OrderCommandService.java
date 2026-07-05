@@ -136,7 +136,9 @@ public class OrderCommandService {
                 order.getRequesterId(),
                 order.getTruckId(),
                 order.getEtaMinutes(),
-                order.getDispatchedAt());
+                order.getDispatchedAt(),
+                order.getCompletedAt(),
+                order.getSecurityHash());
     }
 
     @Transactional
@@ -160,6 +162,10 @@ public class OrderCommandService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
         order.setStatus(OrderStatus.COMPLETED);
+        order.setCompletedAt(OffsetDateTime.now());
+        // Generate a simple security hash
+        String hashStr = order.getId() + "-" + order.getCompletedAt().toEpochSecond();
+        order.setSecurityHash("#FT-HASH-" + java.util.UUID.nameUUIDFromBytes(hashStr.getBytes()).toString().substring(0, 13).toUpperCase());
         return toResponse(orderRepository.save(order));
     }
 

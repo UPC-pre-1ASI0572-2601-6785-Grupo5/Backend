@@ -62,6 +62,12 @@ public class Order {
     @Column
     private OffsetDateTime dispatchedAt;
 
+    @Column
+    private OffsetDateTime completedAt;
+
+    @Column(length = 255)
+    private String securityHash;
+
     public String getTruckId() {
         return truckId;
     }
