@@ -31,4 +31,9 @@ public class PaymentRepositoryAdapter implements PaymentRepository {
     public Optional<Payment> findTopByOrder_IdOrderByCreatedAtDesc(Long orderId) {
         return jpaPaymentRepository.findTopByOrder_IdOrderByCreatedAtDesc(orderId);
     }
+
+    @Override
+    public void deleteByOrderId(Long orderId) {
+        jpaPaymentRepository.deleteByOrder_Id(orderId);
+    }
 }

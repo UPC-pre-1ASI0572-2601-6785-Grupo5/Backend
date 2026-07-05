@@ -23,4 +23,11 @@ public interface PaymentRepository {
      * @return the matching payment, if any
      */
     Optional<Payment> findTopByOrder_IdOrderByCreatedAtDesc(Long orderId);
+
+    /**
+     * Deletes all payments for a given order.
+     *
+     * @param orderId the order identifier
+     */
+    void deleteByOrderId(Long orderId);
 }

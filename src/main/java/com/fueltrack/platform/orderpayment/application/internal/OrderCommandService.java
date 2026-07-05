@@ -215,6 +215,7 @@ public class OrderCommandService {
         if (!orderRepository.existsById(id)) {
             throw new IllegalArgumentException("Order not found");
         }
+        paymentRepository.deleteByOrderId(id);
         orderRepository.deleteById(id);
     }
 

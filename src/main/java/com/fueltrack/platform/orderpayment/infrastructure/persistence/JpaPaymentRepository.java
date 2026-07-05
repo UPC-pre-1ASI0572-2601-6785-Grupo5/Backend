@@ -16,4 +16,11 @@ public interface JpaPaymentRepository extends JpaRepository<Payment, Long> {
      * @return the latest payment, if any
      */
     Optional<Payment> findTopByOrder_IdOrderByCreatedAtDesc(Long orderId);
+
+    /**
+     * Deletes all payments for a given order.
+     *
+     * @param orderId the order identifier
+     */
+    void deleteByOrder_Id(Long orderId);
 }
