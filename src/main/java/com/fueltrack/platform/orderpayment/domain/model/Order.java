@@ -57,6 +57,12 @@ public class Order {
     private String truckId;
 
     @Column
+    private Long driverId;
+
+    @Column
+    private Long tankId;
+
+    @Column
     private Integer etaMinutes;
 
     @Column

@@ -10,6 +10,10 @@ import com.fueltrack.platform.orderpayment.domain.services.PaymentRepository;
 import com.fueltrack.platform.orderpayment.interfaces.rest.requests.CreateOrderRequest;
 import com.fueltrack.platform.orderpayment.interfaces.rest.responses.OrderResponse;
 import com.fueltrack.platform.orderpayment.interfaces.rest.responses.PaymentValidationResponse;
+import com.fueltrack.platform.fleet.domain.model.aggregates.Driver;
+import com.fueltrack.platform.fleet.domain.model.aggregates.Tank;
+import com.fueltrack.platform.fleet.infrastructure.persistence.jpa.repositories.DriverRepository;
+import com.fueltrack.platform.fleet.infrastructure.persistence.jpa.repositories.TankRepository;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -26,15 +30,21 @@ public class OrderCommandService {
     private final PaymentRepository paymentRepository;
     private final PaymentGatewayClient paymentGatewayClient;
     private final InventoryDischargePort inventoryDischargePort;
+    private final DriverRepository driverRepository;
+    private final TankRepository tankRepository;
 
     public OrderCommandService(OrderRepository orderRepository,
                                PaymentRepository paymentRepository,
                                PaymentGatewayClient paymentGatewayClient,
-                               InventoryDischargePort inventoryDischargePort) {
+                               InventoryDischargePort inventoryDischargePort,
+                               DriverRepository driverRepository,
+                               TankRepository tankRepository) {
         this.orderRepository = orderRepository;
         this.paymentRepository = paymentRepository;
         this.paymentGatewayClient = paymentGatewayClient;
         this.inventoryDischargePort = inventoryDischargePort;
+        this.driverRepository = driverRepository;
+        this.tankRepository = tankRepository;
     }
 
     @Transactional
@@ -85,15 +95,35 @@ public class OrderCommandService {
     }
 
     @Transactional
-    public OrderResponse dispatchOrder(Long id, String truckId) {
+    public OrderResponse dispatchOrder(Long id, String truckId, Long driverId, Long tankId) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
         if (order.getStatus() != OrderStatus.APPROVED) {
             throw new IllegalStateException("Only approved orders can be dispatched");
         }
         order.setTruckId(truckId);
+        order.setDriverId(driverId);
+        order.setTankId(tankId);
         order.setStatus(OrderStatus.IN_TRANSIT);
         order.setDispatchedAt(OffsetDateTime.now());
+        
+        // Update Driver status
+        if (driverId != null) {
+            driverRepository.findById(driverId).ifPresent(driver -> {
+                driver.setStatus("ON_ROUTE");
+                driverRepository.save(driver);
+            });
+        }
+        
+        // Update Tank status and fuel
+        if (tankId != null) {
+            tankRepository.findById(tankId).ifPresent(tank -> {
+                tank.setStatus("ON_ROUTE");
+                tank.setCurrentFuelGallons(order.getGallons());
+                tankRepository.save(tank);
+            });
+        }
+
         orderRepository.save(order);
         inventoryDischargePort.discharge(order.getFuelType(), order.getGallons());
         return toResponse(order);
@@ -135,6 +165,8 @@ public class OrderCommandService {
                 order.getCreatedAt(),
                 order.getRequesterId(),
                 order.getTruckId(),
+                order.getDriverId(),
+                order.getTankId(),
                 order.getEtaMinutes(),
                 order.getDispatchedAt(),
                 order.getCompletedAt(),
@@ -166,6 +198,33 @@ public class OrderCommandService {
         // Generate a simple security hash
         String hashStr = order.getId() + "-" + order.getCompletedAt().toEpochSecond();
         order.setSecurityHash("#FT-HASH-" + java.util.UUID.nameUUIDFromBytes(hashStr.getBytes()).toString().substring(0, 13).toUpperCase());
+        
+        // Update Driver trips and status
+        if (order.getDriverId() != null) {
+            driverRepository.findById(order.getDriverId()).ifPresent(driver -> {
+                driver.setCompletedTripsSinceRest(driver.getCompletedTripsSinceRest() + 1);
+                if (driver.getCompletedTripsSinceRest() >= 2) {
+                    driver.setStatus("FATIGUE");
+                } else {
+                    driver.setStatus("AVAILABLE");
+                }
+                driverRepository.save(driver);
+            });
+        }
+        
+        // Update Tank trips and status
+        if (order.getTankId() != null) {
+            tankRepository.findById(order.getTankId()).ifPresent(tank -> {
+                tank.setCompletedTripsSinceMaintenance(tank.getCompletedTripsSinceMaintenance() + 1);
+                if (tank.getCompletedTripsSinceMaintenance() >= 5) {
+                    tank.setStatus("UNSTABLE_VALVES");
+                } else {
+                    tank.setStatus("AVAILABLE");
+                }
+                tankRepository.save(tank);
+            });
+        }
+
         return toResponse(orderRepository.save(order));
     }
 

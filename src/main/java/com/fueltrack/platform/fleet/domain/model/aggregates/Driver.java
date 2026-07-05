@@ -42,9 +42,8 @@ public class Driver {
 
     @Column(nullable = false)
     @Builder.Default
-    private Integer drivingMinutes = 0;
+    private Integer completedTripsSinceRest = 0;
 
-    @Column(nullable = false)
-    @Builder.Default
-    private Integer restingMinutesLeft = 0;
+    @Column
+    private java.time.OffsetDateTime restingUntil;
 }

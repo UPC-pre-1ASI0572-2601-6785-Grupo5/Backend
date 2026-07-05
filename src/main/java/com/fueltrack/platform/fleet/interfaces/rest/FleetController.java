@@ -44,6 +44,25 @@ public class FleetController {
         }
     }
 
+    // --- TIMERS EVALUATION ---
+    private void evaluateDriverTimer(Driver driver) {
+        if (driver.getRestingUntil() != null && java.time.OffsetDateTime.now().isAfter(driver.getRestingUntil())) {
+            driver.setStatus("AVAILABLE");
+            driver.setRestingUntil(null);
+            driver.setCompletedTripsSinceRest(0);
+            fleetCommandService.saveDriver(driver);
+        }
+    }
+
+    private void evaluateTankTimer(Tank tank) {
+        if (tank.getMaintenanceUntil() != null && java.time.OffsetDateTime.now().isAfter(tank.getMaintenanceUntil())) {
+            tank.setStatus("AVAILABLE");
+            tank.setMaintenanceUntil(null);
+            tank.setCompletedTripsSinceMaintenance(0);
+            fleetCommandService.saveTank(tank);
+        }
+    }
+
     // --- DRIVERS ---
 
     @Operation(summary = "List all drivers for the authenticated provider")
@@ -51,7 +70,9 @@ public class FleetController {
     public List<Driver> listDrivers(@AuthenticationPrincipal UserDetails currentUser) {
         User user = resolveUser(currentUser);
         verifyProvider(user);
-        return fleetCommandService.listDrivers(user.getId());
+        List<Driver> drivers = fleetCommandService.listDrivers(user.getId());
+        drivers.forEach(this::evaluateDriverTimer);
+        return drivers;
     }
 
     @Operation(summary = "Add a new driver")
@@ -66,7 +87,8 @@ public class FleetController {
                 .name(request.getName())
                 .licenseNumber(request.getLicenseNumber())
                 .profilePicture(request.getProfilePicture())
-                .status(request.getStatus())
+                .status("AVAILABLE")
+                .completedTripsSinceRest(0)
                 .build();
         return fleetCommandService.saveDriver(driver);
     }
@@ -86,7 +108,24 @@ public class FleetController {
         driverToUpdate.setName(request.getName());
         driverToUpdate.setLicenseNumber(request.getLicenseNumber());
         driverToUpdate.setProfilePicture(request.getProfilePicture());
-        driverToUpdate.setStatus(request.getStatus());
+
+        return fleetCommandService.saveDriver(driverToUpdate);
+    }
+
+    @Operation(summary = "Set driver to rest")
+    @PostMapping("/drivers/{id}/rest")
+    public Driver restDriver(@AuthenticationPrincipal UserDetails currentUser, @PathVariable Long id, @RequestParam int minutes) {
+        User user = resolveUser(currentUser);
+        verifyProvider(user);
+
+        List<Driver> existingDrivers = fleetCommandService.listDrivers(user.getId());
+        Driver driverToUpdate = existingDrivers.stream()
+                .filter(d -> d.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Driver not found"));
+
+        driverToUpdate.setStatus("RESTING");
+        driverToUpdate.setRestingUntil(java.time.OffsetDateTime.now().plusMinutes(minutes));
 
         return fleetCommandService.saveDriver(driverToUpdate);
     }
@@ -107,7 +146,9 @@ public class FleetController {
     public List<Tank> listTanks(@AuthenticationPrincipal UserDetails currentUser) {
         User user = resolveUser(currentUser);
         verifyProvider(user);
-        return fleetCommandService.listTanks(user.getId());
+        List<Tank> tanks = fleetCommandService.listTanks(user.getId());
+        tanks.forEach(this::evaluateTankTimer);
+        return tanks;
     }
 
     @Operation(summary = "Add a new tank")
@@ -123,7 +164,8 @@ public class FleetController {
                 .model(request.getModel())
                 .capacityGallons(request.getCapacityGallons())
                 .currentFuelGallons(request.getCurrentFuelGallons())
-                .status(request.getStatus())
+                .status("AVAILABLE")
+                .completedTripsSinceMaintenance(0)
                 .build();
         return fleetCommandService.saveTank(tank);
     }
@@ -144,7 +186,24 @@ public class FleetController {
         tankToUpdate.setModel(request.getModel());
         tankToUpdate.setCapacityGallons(request.getCapacityGallons());
         tankToUpdate.setCurrentFuelGallons(request.getCurrentFuelGallons());
-        tankToUpdate.setStatus(request.getStatus());
+
+        return fleetCommandService.saveTank(tankToUpdate);
+    }
+
+    @Operation(summary = "Set tank to maintenance")
+    @PostMapping("/tanks/{id}/maintenance")
+    public Tank maintenanceTank(@AuthenticationPrincipal UserDetails currentUser, @PathVariable Long id, @RequestParam int minutes) {
+        User user = resolveUser(currentUser);
+        verifyProvider(user);
+
+        List<Tank> existingTanks = fleetCommandService.listTanks(user.getId());
+        Tank tankToUpdate = existingTanks.stream()
+                .filter(t -> t.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tank not found"));
+
+        tankToUpdate.setStatus("MAINTENANCE");
+        tankToUpdate.setMaintenanceUntil(java.time.OffsetDateTime.now().plusMinutes(minutes));
 
         return fleetCommandService.saveTank(tankToUpdate);
     }

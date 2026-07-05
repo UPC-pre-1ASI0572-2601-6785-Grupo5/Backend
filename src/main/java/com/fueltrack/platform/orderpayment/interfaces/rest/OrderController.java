@@ -79,7 +79,7 @@ public class OrderController {
     @PatchMapping("/{id}/dispatch")
     public OrderResponse dispatchOrder(@PathVariable Long id,
                                        @Valid @RequestBody DispatchOrderRequest request) {
-        return orderCommandService.dispatchOrder(id, request.getTruckId());
+        return orderCommandService.dispatchOrder(id, request.getTruckId(), request.getDriverId(), request.getTankId());
     }
 
     @Operation(summary = "Validate payment for an order")

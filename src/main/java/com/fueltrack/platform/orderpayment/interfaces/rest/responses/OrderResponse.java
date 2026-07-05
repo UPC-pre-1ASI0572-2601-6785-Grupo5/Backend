@@ -16,6 +16,8 @@ public record OrderResponse(
         OffsetDateTime createdAt,
         Long requesterId,
         String truckId,
+        Long driverId,
+        Long tankId,
         Integer etaMinutes,
         OffsetDateTime dispatchedAt,
         OffsetDateTime completedAt,

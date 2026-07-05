@@ -58,4 +58,11 @@ public class Tank {
     @Column(nullable = false)
     @Builder.Default
     private Double speedKmh = 0.0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer completedTripsSinceMaintenance = 0;
+
+    @Column
+    private java.time.OffsetDateTime maintenanceUntil;
 }

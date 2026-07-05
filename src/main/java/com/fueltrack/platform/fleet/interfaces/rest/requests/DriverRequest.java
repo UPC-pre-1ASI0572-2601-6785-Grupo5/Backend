@@ -13,8 +13,6 @@ public class DriverRequest {
     @NotBlank
     private String licenseNumber;
     
-    private String profilePicture;
     
-    @NotBlank
-    private String status;
+    private String profilePicture;
 }
