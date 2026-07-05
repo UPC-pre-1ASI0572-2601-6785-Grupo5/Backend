@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotBlank;
  * Request payload for dispatching an order with an assigned truck.
  */
 public class DispatchOrderRequest {
-    @NotBlank
     private String truckId;
     private Long driverId;
     
