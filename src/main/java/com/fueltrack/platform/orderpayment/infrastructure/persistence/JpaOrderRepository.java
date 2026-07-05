@@ -12,4 +12,6 @@ public interface JpaOrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByRequesterIdOrderByCreatedAtDesc(Long requesterId);
 
     List<Order> findAllByOrderByCreatedAtDesc();
+    
+    List<Order> findByProviderIdIsNullOrProviderIdOrderByCreatedAtDesc(Long providerId);
 }

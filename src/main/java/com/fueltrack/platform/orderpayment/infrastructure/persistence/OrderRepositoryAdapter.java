@@ -47,4 +47,9 @@ public class OrderRepositoryAdapter implements OrderRepository {
     public void deleteById(Long id) {
         jpaOrderRepository.deleteById(id);
     }
+    
+    @Override
+    public List<Order> findByProviderIdIsNullOrProviderId(Long providerId) {
+        return jpaOrderRepository.findByProviderIdIsNullOrProviderIdOrderByCreatedAtDesc(providerId);
+    }
 }

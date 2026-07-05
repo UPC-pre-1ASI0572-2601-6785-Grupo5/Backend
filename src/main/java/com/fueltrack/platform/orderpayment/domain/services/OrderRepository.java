@@ -20,4 +20,6 @@ public interface OrderRepository {
     boolean existsById(Long id);
 
     void deleteById(Long id);
+    
+    List<Order> findByProviderIdIsNullOrProviderId(Long providerId);
 }

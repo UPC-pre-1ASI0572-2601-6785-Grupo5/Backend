@@ -65,7 +65,7 @@ public class OrderCommandService {
 
     public List<OrderResponse> listOrders(Long requesterId, boolean isProvider) {
         List<Order> orders = isProvider
-                ? orderRepository.findAll()
+                ? orderRepository.findByProviderIdIsNullOrProviderId(requesterId)
                 : orderRepository.findByRequesterId(requesterId);
         return orders.stream().map(this::toResponse).toList();
     }
@@ -76,13 +76,17 @@ public class OrderCommandService {
     }
 
     @Transactional
-    public OrderResponse approveOrder(Long id) {
+    public OrderResponse approveOrder(Long id, Long providerId) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
         if (order.getStatus() != OrderStatus.PENDING_APPROVAL) {
             throw new IllegalStateException("Only orders in PENDING_APPROVAL can be approved");
         }
+        if (order.getProviderId() != null && !order.getProviderId().equals(providerId)) {
+            throw new IllegalStateException("This order is already assigned to another provider");
+        }
         order.setStatus(OrderStatus.APPROVED);
+        order.setProviderId(providerId);
         return toResponse(orderRepository.save(order));
     }
 
@@ -167,6 +171,7 @@ public class OrderCommandService {
                 order.getTruckId(),
                 order.getDriverId(),
                 order.getTankId(),
+                order.getProviderId(),
                 order.getEtaMinutes(),
                 order.getDispatchedAt(),
                 order.getCompletedAt(),

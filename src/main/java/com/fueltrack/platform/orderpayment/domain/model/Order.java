@@ -63,6 +63,9 @@ public class Order {
     private Long tankId;
 
     @Column
+    private Long providerId;
+
+    @Column
     private Integer etaMinutes;
 
     @Column

@@ -65,8 +65,10 @@ public class OrderController {
 
     @Operation(summary = "Approve an order (PROVIDER only)")
     @PatchMapping("/{id}/approve")
-    public OrderResponse approveOrder(@PathVariable Long id) {
-        return orderCommandService.approveOrder(id);
+    public OrderResponse approveOrder(@PathVariable Long id, @AuthenticationPrincipal UserDetails currentUser) {
+        User user = resolveUser(currentUser);
+        verifyProvider(user);
+        return orderCommandService.approveOrder(id, user.getId());
     }
 
     @Operation(summary = "Update gallons of an order (Admin/Manual fix)")
