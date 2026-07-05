@@ -15,6 +15,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -118,5 +119,11 @@ public class OrderController {
     private User resolveUser(UserDetails currentUser) {
         return userRepository.findByEmail(currentUser.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
+    }
+
+    private void verifyProvider(User user) {
+        if (user.getRole() != UserRole.PROVIDER) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only providers can access this endpoint");
+        }
     }
 }
