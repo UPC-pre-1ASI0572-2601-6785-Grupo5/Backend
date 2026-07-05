@@ -32,9 +32,10 @@ public class FuelTrackApplication {
                 jdbcTemplate.execute("DO $$ DECLARE " +
                         "r RECORD; " +
                         "BEGIN " +
-                        "FOR r IN (SELECT constraint_name FROM information_schema.check_constraints WHERE constraint_name LIKE '%orders%status%check%' OR constraint_name LIKE '%orders%status%chk%') " +
+                        "FOR r IN (SELECT tc.constraint_name FROM information_schema.table_constraints tc " +
+                        "WHERE tc.table_name = 'orders' AND tc.constraint_type = 'CHECK') " +
                         "LOOP " +
-                        "EXECUTE 'ALTER TABLE orders DROP CONSTRAINT ' || r.constraint_name; " +
+                        "EXECUTE 'ALTER TABLE orders DROP CONSTRAINT ' || quote_ident(r.constraint_name); " +
                         "END LOOP; " +
                         "END $$;");
             } catch (Exception e) {
