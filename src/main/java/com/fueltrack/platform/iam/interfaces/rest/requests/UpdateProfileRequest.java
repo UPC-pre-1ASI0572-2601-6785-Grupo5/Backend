@@ -6,5 +6,6 @@ public record UpdateProfileRequest(
         String companyName,
         String taxId,
         String phone,
-        String address) {
+        String address,
+        String subscriptionPlan) {
 }

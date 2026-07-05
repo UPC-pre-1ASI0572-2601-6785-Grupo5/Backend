@@ -95,6 +95,18 @@ public class OrderController {
         orderCommandService.deleteOrder(id);
     }
 
+    @Operation(summary = "Mark an order as DELIVERED (PROVIDER only)")
+    @PatchMapping("/{id}/deliver")
+    public OrderResponse markAsDelivered(@PathVariable Long id) {
+        return orderCommandService.markAsDelivered(id);
+    }
+
+    @Operation(summary = "Mark an order as COMPLETED (CLIENT only)")
+    @PatchMapping("/{id}/complete")
+    public OrderResponse markAsCompleted(@PathVariable Long id) {
+        return orderCommandService.markAsCompleted(id);
+    }
+
     private User resolveUser(UserDetails currentUser) {
         return userRepository.findByEmail(currentUser.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));

@@ -142,4 +142,20 @@ public class OrderCommandService {
         }
         orderRepository.deleteById(id);
     }
+
+    @Transactional
+    public OrderResponse markAsDelivered(Long id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+        order.setStatus(OrderStatus.DELIVERED);
+        return toResponse(orderRepository.save(order));
+    }
+
+    @Transactional
+    public OrderResponse markAsCompleted(Long id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+        order.setStatus(OrderStatus.COMPLETED);
+        return toResponse(orderRepository.save(order));
+    }
 }

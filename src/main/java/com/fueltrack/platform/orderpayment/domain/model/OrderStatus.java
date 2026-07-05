@@ -7,5 +7,6 @@ public enum OrderStatus {
     PENDING_APPROVAL,
     APPROVED,
     IN_TRANSIT,
-    DELIVERED
+    DELIVERED,
+    COMPLETED
 }

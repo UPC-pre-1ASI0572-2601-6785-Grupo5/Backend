@@ -43,6 +43,7 @@ public class UserManagementService {
         if (request.taxId() != null) user.setTaxId(request.taxId());
         if (request.phone() != null) user.setPhone(request.phone());
         if (request.address() != null) user.setAddress(request.address());
+        if (request.subscriptionPlan() != null) user.setSubscriptionPlan(request.subscriptionPlan());
         return Optional.of(userRepository.save(user));
     }
 
