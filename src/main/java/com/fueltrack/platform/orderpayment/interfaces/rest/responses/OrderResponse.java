@@ -22,5 +22,10 @@ public record OrderResponse(
         Integer etaMinutes,
         OffsetDateTime dispatchedAt,
         OffsetDateTime completedAt,
-        String securityHash) {
+        String securityHash,
+        String providerName,
+        String providerAddress,
+        String driverName,
+        String driverProfilePicture,
+        Integer driverTrips) {
 }

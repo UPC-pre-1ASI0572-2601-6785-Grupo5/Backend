@@ -12,6 +12,8 @@ import com.fueltrack.platform.orderpayment.interfaces.rest.responses.OrderRespon
 import com.fueltrack.platform.orderpayment.interfaces.rest.responses.PaymentValidationResponse;
 import com.fueltrack.platform.fleet.domain.model.aggregates.Driver;
 import com.fueltrack.platform.fleet.domain.model.aggregates.Tank;
+import com.fueltrack.platform.iam.domain.model.User;
+import com.fueltrack.platform.iam.domain.services.UserRepository;
 import com.fueltrack.platform.fleet.infrastructure.persistence.jpa.repositories.DriverRepository;
 import com.fueltrack.platform.fleet.infrastructure.persistence.jpa.repositories.TankRepository;
 import jakarta.transaction.Transactional;
@@ -32,19 +34,22 @@ public class OrderCommandService {
     private final InventoryDischargePort inventoryDischargePort;
     private final DriverRepository driverRepository;
     private final TankRepository tankRepository;
+    private final UserRepository userRepository;
 
     public OrderCommandService(OrderRepository orderRepository,
                                PaymentRepository paymentRepository,
                                PaymentGatewayClient paymentGatewayClient,
                                InventoryDischargePort inventoryDischargePort,
                                DriverRepository driverRepository,
-                               TankRepository tankRepository) {
+                               TankRepository tankRepository,
+                               UserRepository userRepository) {
         this.orderRepository = orderRepository;
         this.paymentRepository = paymentRepository;
         this.paymentGatewayClient = paymentGatewayClient;
         this.inventoryDischargePort = inventoryDischargePort;
         this.driverRepository = driverRepository;
         this.tankRepository = tankRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -159,6 +164,28 @@ public class OrderCommandService {
     }
 
     private OrderResponse toResponse(Order order) {
+        String providerName = null;
+        String providerAddress = null;
+        if (order.getProviderId() != null) {
+            User provider = userRepository.findById(order.getProviderId()).orElse(null);
+            if (provider != null) {
+                providerName = provider.getCompanyName();
+                providerAddress = provider.getAddress();
+            }
+        }
+
+        String driverName = null;
+        String driverProfilePicture = null;
+        Integer driverTrips = null;
+        if (order.getDriverId() != null) {
+            Driver driver = driverRepository.findById(order.getDriverId()).orElse(null);
+            if (driver != null) {
+                driverName = driver.getName();
+                driverProfilePicture = driver.getProfilePicture();
+                driverTrips = driver.getCompletedTripsSinceRest();
+            }
+        }
+
         return new OrderResponse(
                 order.getId(),
                 order.getFuelType(),
@@ -175,7 +202,12 @@ public class OrderCommandService {
                 order.getEtaMinutes(),
                 order.getDispatchedAt(),
                 order.getCompletedAt(),
-                order.getSecurityHash());
+                order.getSecurityHash(),
+                providerName,
+                providerAddress,
+                driverName,
+                driverProfilePicture,
+                driverTrips);
     }
 
     @Transactional
