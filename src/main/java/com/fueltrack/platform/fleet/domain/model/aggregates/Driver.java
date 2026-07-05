@@ -40,7 +40,7 @@ public class Driver {
     @Column(nullable = false, length = 50)
     private String status; // AVAILABLE, ON_ROUTE, RESTING, FATIGUE
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "integer default 0")
     @Builder.Default
     private Integer completedTripsSinceRest = 0;
 

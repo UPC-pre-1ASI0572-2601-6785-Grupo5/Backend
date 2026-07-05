@@ -59,7 +59,7 @@ public class Tank {
     @Builder.Default
     private Double speedKmh = 0.0;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "integer default 0")
     @Builder.Default
     private Integer completedTripsSinceMaintenance = 0;
 
