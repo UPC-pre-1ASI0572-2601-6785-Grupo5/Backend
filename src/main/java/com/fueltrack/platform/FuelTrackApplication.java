@@ -26,8 +26,21 @@ public class FuelTrackApplication {
     }
 
     @Bean
-    public CommandLineRunner initData(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public CommandLineRunner initData(UserRepository userRepository, PasswordEncoder passwordEncoder, org.springframework.jdbc.core.JdbcTemplate jdbcTemplate) {
         return args -> {
+            try {
+                jdbcTemplate.execute("DO $$ DECLARE " +
+                        "r RECORD; " +
+                        "BEGIN " +
+                        "FOR r IN (SELECT constraint_name FROM information_schema.check_constraints WHERE constraint_name LIKE '%orders%status%check%' OR constraint_name LIKE '%orders%status%chk%') " +
+                        "LOOP " +
+                        "EXECUTE 'ALTER TABLE orders DROP CONSTRAINT ' || r.constraint_name; " +
+                        "END LOOP; " +
+                        "END $$;");
+            } catch (Exception e) {
+                System.err.println("Could not drop orders status constraint: " + e.getMessage());
+            }
+
             if (userRepository.findByEmail("123").isEmpty()) {
                 User user1 = new User();
                 user1.setEmail("123");
