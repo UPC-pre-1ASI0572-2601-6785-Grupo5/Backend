@@ -6,6 +6,7 @@ import com.fueltrack.platform.iam.domain.services.UserRepository;
 import com.fueltrack.platform.orderpayment.application.internal.OrderCommandService;
 import com.fueltrack.platform.orderpayment.interfaces.rest.requests.CreateOrderRequest;
 import com.fueltrack.platform.orderpayment.interfaces.rest.requests.DispatchOrderRequest;
+import com.fueltrack.platform.orderpayment.interfaces.rest.requests.SignatureRequest;
 import com.fueltrack.platform.orderpayment.interfaces.rest.responses.OrderResponse;
 import com.fueltrack.platform.orderpayment.interfaces.rest.responses.PaymentValidationResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -114,6 +115,11 @@ public class OrderController {
     @PatchMapping("/{id}/accelerate")
     public OrderResponse accelerateOrder(@PathVariable Long id) {
         return orderCommandService.accelerateOrder(id);
+    }
+
+    @PatchMapping("/{id}/signature")
+    public ResponseEntity<OrderResponse> saveSignature(@PathVariable Long id, @RequestBody @Valid SignatureRequest request) {
+        return ResponseEntity.ok(orderCommandService.saveSignature(id, request.getSignature()));
     }
 
     private User resolveUser(UserDetails currentUser) {

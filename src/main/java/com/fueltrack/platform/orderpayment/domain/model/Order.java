@@ -77,6 +77,9 @@ public class Order {
     @Column(length = 255)
     private String securityHash;
 
+    @Column(columnDefinition = "TEXT")
+    private String clientSignature;
+
     public String getTruckId() {
         return truckId;
     }

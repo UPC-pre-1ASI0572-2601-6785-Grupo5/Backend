@@ -27,5 +27,6 @@ public record OrderResponse(
         String providerAddress,
         String driverName,
         String driverProfilePicture,
-        Integer driverTrips) {
+        Integer driverTrips,
+        String clientSignature) {
 }

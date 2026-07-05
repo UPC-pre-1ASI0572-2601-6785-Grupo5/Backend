@@ -207,7 +207,8 @@ public class OrderCommandService {
                 providerAddress,
                 driverName,
                 driverProfilePicture,
-                driverTrips);
+                driverTrips,
+                order.getClientSignature());
     }
 
     @Transactional
@@ -224,6 +225,14 @@ public class OrderCommandService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
         order.setStatus(OrderStatus.DELIVERED);
+        return toResponse(orderRepository.save(order));
+    }
+
+    @Transactional
+    public OrderResponse saveSignature(Long id, String signature) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+        order.setClientSignature(signature);
         return toResponse(orderRepository.save(order));
     }
 
