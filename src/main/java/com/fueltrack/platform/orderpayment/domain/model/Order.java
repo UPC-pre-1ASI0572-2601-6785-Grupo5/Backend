@@ -56,6 +56,12 @@ public class Order {
     @Column(length = 50)
     private String truckId;
 
+    @Column
+    private Integer etaMinutes;
+
+    @Column
+    private OffsetDateTime dispatchedAt;
+
     public String getTruckId() {
         return truckId;
     }

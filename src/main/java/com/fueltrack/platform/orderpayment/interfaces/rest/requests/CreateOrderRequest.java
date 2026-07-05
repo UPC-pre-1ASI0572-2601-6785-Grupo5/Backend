@@ -15,5 +15,6 @@ public record CreateOrderRequest(
         @NotBlank String fuelType,
         String name,
         @NotNull @Positive Double gallons,
-        @NotBlank String documentRef) {
+        @NotBlank String documentRef,
+        Integer etaMinutes) {
 }

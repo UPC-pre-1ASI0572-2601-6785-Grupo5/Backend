@@ -47,6 +47,7 @@ public class OrderCommandService {
                 .status(OrderStatus.PENDING_APPROVAL)
                 .createdAt(OffsetDateTime.now())
                 .requesterId(requesterId)
+                .etaMinutes(request.etaMinutes())
                 .build();
 
         return toResponse(orderRepository.save(order));
@@ -92,6 +93,7 @@ public class OrderCommandService {
         }
         order.setTruckId(truckId);
         order.setStatus(OrderStatus.IN_TRANSIT);
+        order.setDispatchedAt(OffsetDateTime.now());
         orderRepository.save(order);
         inventoryDischargePort.discharge(order.getFuelType(), order.getGallons());
         return toResponse(order);
@@ -132,7 +134,9 @@ public class OrderCommandService {
                 order.getStatus(),
                 order.getCreatedAt(),
                 order.getRequesterId(),
-                order.getTruckId());
+                order.getTruckId(),
+                order.getEtaMinutes(),
+                order.getDispatchedAt());
     }
 
     @Transactional

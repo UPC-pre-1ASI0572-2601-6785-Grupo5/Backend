@@ -15,5 +15,7 @@ public record OrderResponse(
         OrderStatus status,
         OffsetDateTime createdAt,
         Long requesterId,
-        String truckId) {
+        String truckId,
+        Integer etaMinutes,
+        OffsetDateTime dispatchedAt) {
 }
