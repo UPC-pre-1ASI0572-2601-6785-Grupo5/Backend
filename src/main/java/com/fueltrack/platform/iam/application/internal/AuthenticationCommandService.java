@@ -93,6 +93,7 @@ public class AuthenticationCommandService {
                 user.getPhone(),
                 user.getAddress(),
                 Boolean.TRUE.equals(user.getMfaEnabled()),
-                user.getSubscriptionPlan());
+                user.getSubscriptionPlan(),
+                user.getProfilePicture());
     }
 }
