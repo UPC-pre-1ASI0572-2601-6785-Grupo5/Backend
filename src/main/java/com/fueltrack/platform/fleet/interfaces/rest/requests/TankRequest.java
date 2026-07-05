@@ -16,8 +16,4 @@ public class TankRequest {
     
     @NotNull
     private Double capacityGallons;
-    
-    
-    @NotNull
-    private Double currentFuelGallons;
 }

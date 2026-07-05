@@ -163,7 +163,7 @@ public class FleetController {
                 .plate(request.getPlate())
                 .model(request.getModel())
                 .capacityGallons(request.getCapacityGallons())
-                .currentFuelGallons(request.getCurrentFuelGallons())
+                .currentFuelGallons(0.0)
                 .status("AVAILABLE")
                 .completedTripsSinceMaintenance(0)
                 .build();
@@ -185,7 +185,6 @@ public class FleetController {
         tankToUpdate.setPlate(request.getPlate());
         tankToUpdate.setModel(request.getModel());
         tankToUpdate.setCapacityGallons(request.getCapacityGallons());
-        tankToUpdate.setCurrentFuelGallons(request.getCurrentFuelGallons());
 
         return fleetCommandService.saveTank(tankToUpdate);
     }
