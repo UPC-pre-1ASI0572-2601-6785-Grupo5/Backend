@@ -44,7 +44,7 @@ public class Order {
     private String documentRef;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 30, columnDefinition = "varchar(30)")
     private OrderStatus status;
 
     @Column(nullable = false)

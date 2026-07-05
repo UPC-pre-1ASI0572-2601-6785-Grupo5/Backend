@@ -29,16 +29,15 @@ public class FuelTrackApplication {
     public CommandLineRunner initData(UserRepository userRepository, PasswordEncoder passwordEncoder, org.springframework.jdbc.core.JdbcTemplate jdbcTemplate) {
         return args -> {
             try {
-                jdbcTemplate.execute("DO $$ DECLARE " +
-                        "r RECORD; " +
-                        "BEGIN " +
-                        "FOR r IN (SELECT tc.constraint_name FROM information_schema.table_constraints tc " +
-                        "WHERE tc.table_name = 'orders' AND tc.constraint_type = 'CHECK') " +
-                        "LOOP " +
-                        "EXECUTE 'ALTER TABLE orders DROP CONSTRAINT ' || quote_ident(r.constraint_name); " +
-                        "END LOOP; " +
-                        "END $$;");
-                jdbcTemplate.execute("ALTER TABLE orders ALTER COLUMN status TYPE VARCHAR(255);");
+                // Find and drop all check constraints on 'orders' table using pg_constraint
+                java.util.List<String> constraints = jdbcTemplate.queryForList(
+                    "SELECT conname FROM pg_constraint INNER JOIN pg_class ON conrelid = pg_class.oid WHERE pg_class.relname = 'orders' AND contype = 'c'", 
+                    String.class
+                );
+                for (String constraint : constraints) {
+                    jdbcTemplate.execute("ALTER TABLE orders DROP CONSTRAINT " + constraint);
+                }
+                jdbcTemplate.execute("ALTER TABLE orders ALTER COLUMN status TYPE VARCHAR(30);");
             } catch (Exception e) {
                 System.err.println("Could not drop orders status constraint: " + e.getMessage());
             }
