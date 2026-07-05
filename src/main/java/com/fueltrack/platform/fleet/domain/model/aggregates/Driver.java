@@ -46,4 +46,13 @@ public class Driver {
 
     @Column
     private java.time.OffsetDateTime restingUntil;
+
+    // Legacy fields kept to prevent INSERT errors on existing DB schema
+    @Column(name = "driving_minutes")
+    @Builder.Default
+    private Integer drivingMinutes = 0;
+
+    @Column(name = "resting_minutes_left")
+    @Builder.Default
+    private Integer restingMinutesLeft = 0;
 }
