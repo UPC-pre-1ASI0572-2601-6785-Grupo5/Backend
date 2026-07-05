@@ -55,7 +55,7 @@ public class InventoryCommandService {
             String lower = fuelType.toLowerCase();
             if (lower.contains("diesel") || lower.contains("diésel")) {
                 searchType = "Diesel B5 S-50";
-            } else if (lower.contains("95")) {
+            } else if (lower.contains("95") || lower.contains("regular")) {
                 searchType = "Gasohol 95 Plus";
             } else if (lower.contains("98") || lower.contains("premium")) {
                 searchType = "Gasohol 98";
