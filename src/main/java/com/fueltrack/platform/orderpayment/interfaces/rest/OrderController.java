@@ -107,6 +107,12 @@ public class OrderController {
         return orderCommandService.markAsCompleted(id);
     }
 
+    @Operation(summary = "Accelerate an order (PROVIDER only)")
+    @PatchMapping("/{id}/accelerate")
+    public OrderResponse accelerateOrder(@PathVariable Long id) {
+        return orderCommandService.accelerateOrder(id);
+    }
+
     private User resolveUser(UserDetails currentUser) {
         return userRepository.findByEmail(currentUser.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));

@@ -162,4 +162,12 @@ public class OrderCommandService {
         order.setStatus(OrderStatus.COMPLETED);
         return toResponse(orderRepository.save(order));
     }
+
+    @Transactional
+    public OrderResponse accelerateOrder(Long id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+        order.setEtaMinutes(0);
+        return toResponse(orderRepository.save(order));
+    }
 }

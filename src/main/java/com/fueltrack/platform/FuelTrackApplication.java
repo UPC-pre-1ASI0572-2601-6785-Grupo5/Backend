@@ -38,6 +38,7 @@ public class FuelTrackApplication {
                         "EXECUTE 'ALTER TABLE orders DROP CONSTRAINT ' || quote_ident(r.constraint_name); " +
                         "END LOOP; " +
                         "END $$;");
+                jdbcTemplate.execute("ALTER TABLE orders ALTER COLUMN status TYPE VARCHAR(255);");
             } catch (Exception e) {
                 System.err.println("Could not drop orders status constraint: " + e.getMessage());
             }
